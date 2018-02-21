@@ -1,7 +1,8 @@
+require 'ruby_robot/tabletop'
 #
 # A board which is 5x5
 #
-class NetflixBoard < Board
+class NetflixBoard < Tabletop
 	def initialize
 		# The instructions say that a Netflix board
 		# is 5x5

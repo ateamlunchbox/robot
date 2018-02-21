@@ -1,0 +1,17 @@
+I think one of the first things to do is decide objects. 
+
+My initial stab is to have Robot and Tabletop since those were called out
+in the spec.
+
+Then I thought that maybe I could do the whole thing with just Robot.  However,
+there is state info for Robot (orientation) and state info for Tabletop (position).  
+I could see that future iterations could include a tabletop that is a different
+width/height than 5x5, there could be an iteration where there are multiple 
+robots on a single tabletop (and I'm making the assumption that only one robot
+can be at a Tabletop position at a time).
+
+Also, I can see that there could be multiple Tabletops with a single Robot.  The
+Robot could be placed on one Tabletop, move around, and then be placed on a 
+separate Tabletop (with the same orientation state) and continue to move.
+
+I'll continue with Robot and Tabletop as the objects.
