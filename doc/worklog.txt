@@ -14,3 +14,4 @@ Total minutes: 180 mintes (3 hours)
 
 2125-2205 40 min: got the shell working
 2205-2215 10 min: adding README
+2215-2225 10 min: found bug, added tests, fixed

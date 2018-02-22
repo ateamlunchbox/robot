@@ -5,7 +5,7 @@ This project uses the ruby bundler.  Navigate into 'ruby_robot' and run
 
 bundle install
 
-to install dependencies.
+to install dependencies for this gem.
 
 The gem sources include a Rakefile.  The default rake task will run the 
 RSpec test suite (please note: I learned RSpec while implementing this

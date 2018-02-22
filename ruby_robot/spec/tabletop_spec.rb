@@ -43,6 +43,20 @@ describe RubyRobot::Tabletop do
         nt.place(r, x: -3)
       }.to raise_error(RubyRobot::PlacementError)
     end
+    it "should not allow x coord that is larger than width" do
+      nt = RubyRobot::NetflixTabletop.new
+      r = RubyRobot::Robot.new(:south)
+      expect {
+        nt.place(r, x: 300)
+      }.to raise_error(RubyRobot::PlacementError)
+    end
+    it "should not allow y coord that is larger than height" do
+      nt = RubyRobot::NetflixTabletop.new
+      r = RubyRobot::Robot.new(:south)
+      expect {
+        nt.place(r, y: 300)
+      }.to raise_error(RubyRobot::PlacementError)
+    end
   end
 
   context "after a Robot has been placed at a specific position" do
@@ -59,6 +73,16 @@ describe RubyRobot::Tabletop do
       nt.place(r, x: 3, y: 1)
       nt.place(r, x: 2, y: 4)
       expect(nt.position(r)).to eq({x: 2, y: 4})
+    end 
+
+    it "placing the Robot off the board (positively) should NOT move it" do
+      nt = RubyRobot::NetflixTabletop.new
+      r = RubyRobot::Robot.new(:south)
+      nt.place(r, x: 3, y: 1)
+      expect {
+        nt.place(r, x: 200, y: 4)
+      }.to raise_error(RubyRobot::PlacementError)
+      expect(nt.position(r)).to eq({x: 3, y: 1})
     end 
 
     it "should be able to report its position" do

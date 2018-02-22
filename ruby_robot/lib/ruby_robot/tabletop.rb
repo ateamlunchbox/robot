@@ -101,7 +101,8 @@ class Tabletop
   # Place a robot on this board
   #
   def place(robot, x:0, y:0)
-    raise PlacementError.new "Coordinates (#{x},#{y}) are not on this board" if x < 0 || y < 0
+    raise PlacementError.new "Coordinates (#{x},#{y}) are not on this board" if 
+      !width_range.include?(x) || !height_range.include?(y)
     # @playing_field[x][y] = robot
     @robots[robot] = {x: x, y: y}
     robot.place(self)
