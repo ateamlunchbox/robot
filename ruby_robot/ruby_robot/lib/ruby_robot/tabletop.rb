@@ -12,9 +12,33 @@ class Tabletop
 
   def initialize(width, height)
     # Store position of each piece
-    @playing_field = Array.new(@width=width) { Array.new(@height=height) }
+    @width = width
+    @height = height
+    # Actually, this probably isn't necessary
+    # @playing_field = Array.new(@width) { Array.new(@height) }
     # Hash with keys as the robot object and values are x/y coords
     @robots = {}
+  end
+
+  def width_range
+    # Exclude width since positions are 0-based
+    (0...@width)
+  end
+
+  def height_range
+    # Exclude height since positions are 0-based
+    (0...@height)
+  end
+
+  def calculate_position(orig_position, direction_sym)
+    case direction_sym
+    # These are clockwise from north
+    when :north then orig_position[:y] += 1
+    when :east  then orig_position[:x] += 1
+    when :south then orig_position[:y] -= 1
+    when :west  then orig_position[:x] -= 1
+    end
+    orig_position
   end
 
   #
@@ -39,6 +63,14 @@ class Tabletop
   #
   def move?(robot, direction_sym)
     raise PlacementError.new "Robot is not on this table" unless placed?(robot)
+    possible_position = calculate_position(@robots[robot].clone, direction_sym)
+
+    # Is current_position on the board?
+    # Check in range (0..width).include?(x) and (0..height).include?(y)
+    return false if 
+      !width_range.include?(possible_position[:x]) or 
+      !height_range.include?(possible_position[:y])
+    true
   end
 
   #
@@ -46,6 +78,9 @@ class Tabletop
   #
   def move(robot, direction_sym)
     raise PlacementError.new "Robot is not on this table" unless placed?(robot)
+    new_position = calculate_position(@robots[robot].clone, direction_sym)
+    # Move the robot by placing it at its new location
+    place(robot, **new_position)
   end
 
   #
@@ -67,8 +102,9 @@ class Tabletop
   #
   def place(robot, x:0, y:0)
     raise PlacementError.new "Coordinates (#{x},#{y}) are not on this board" if x < 0 || y < 0
-    @playing_field[x][y] = robot
+    # @playing_field[x][y] = robot
     @robots[robot] = {x: x, y: y}
+    robot.place(self)
   end
 
   #

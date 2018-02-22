@@ -5,7 +5,7 @@ class Robot
   VALID_DIRECTIONS = [:north, :east, :south, :west]
 
   attr_reader :direction 
-  attr_accessor :board
+  attr_reader :tabletop
   
   def initialize(direction)
     orig_direction = direction
@@ -13,7 +13,7 @@ class Robot
     direction = direction.kind_of?(String) ? direction.downcase.to_sym : direction
     raise ConstructionError.new(err_msg) unless VALID_DIRECTIONS.include?(direction)
     @direction = direction
-    @board = nil
+    @tabletop = nil
   end
 
   def inspect
@@ -35,6 +35,33 @@ class Robot
   def right
     @direction = VALID_DIRECTIONS[(dir_idx + 1) % VALID_DIRECTIONS.size]
   end
+
+  #
+  # Called by a Tabletop where this has been placed
+  #
+  def place(tabletop)
+    @tabletop = tabletop
+  end
+
+  def report
+    @tabletop.position(self).merge(direction: direction)
+  end
+
+  #
+  # TODO: Error checking for if @tabletop.nil?
+  # Also, @tabletop.move and @tabletop.move? together
+  # should be synchronized if multithreaded where > 1
+  # Robot are on a Tabletop.
+  # 
+  # Return #report after call, whether it was successful
+  # or not (assuming it _is_ in fact placed on a board).
+  #
+  def move
+    @tabletop.move(self, direction) if @tabletop.move?(self, direction)
+    report
+  end
+
+private
 
   def dir_idx
     VALID_DIRECTIONS.index(@direction)

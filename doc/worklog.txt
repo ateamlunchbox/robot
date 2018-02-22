@@ -1,7 +1,12 @@
 2018-02-21
 
-0540-0605 Looking at HW assignment and initial project setup
-1500-1526 Adding initial classes
-1550-1610 Learn RSpec! Start writing tests.
-1610-1630 Tests for Robot
-1706-1750 More tests
+0540-0605 25 Looking at HW assignment and initial project setup
+1500-1526 25 Adding initial classes
+1550-1610 20 Learn RSpec! Start writing tests.
+1610-1630 20 Tests for Robot
+1706-1750 45 More tests
+
+Total minutes: 135 (2.25 hours)
+
+2040-2115 I think the Robot/Tabletop are basically working
+
