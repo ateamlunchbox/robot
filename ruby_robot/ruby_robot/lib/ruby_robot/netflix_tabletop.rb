@@ -1,11 +1,14 @@
 require 'ruby_robot/tabletop'
+
 #
-# A board which is 5x5
+# A Tabletop which is 5x5
 #
-class NetflixBoard < Tabletop
+module RubyRobot
+class NetflixTabletop < Tabletop
 	def initialize
-		# The instructions say that a Netflix board
-		# is 5x5
-		super(5, 5)
+  	# The instructions say that a Netflix Tabletop
+  	# is 5x5
+  	super(5, 5)
 	end
+end
 end

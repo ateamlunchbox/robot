@@ -1,8 +1,7 @@
 # RubyRobot
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/ruby_robot`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Toy code implementing robot interface for ruby coding challenge for Netflix
+https://jobs.netflix.com/jobs/864893 (if dead, this URL exists at archive.org).
 
 ## Installation
 
