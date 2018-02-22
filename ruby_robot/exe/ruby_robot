@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+$:.unshift(File.dirname(__FILE__) + '/../lib') unless $:.include?(File.dirname(__FILE__) + '/../lib')
+
+require 'rubygems'
+require 'ruby_robot'
+
+STDOUT.puts "Welcome to the shell; press 'tab' to see available commands"
+STDOUT.puts "(tab-complete is also enabled)"
+::Bombshell.launch(::RubyRobot::Shell)

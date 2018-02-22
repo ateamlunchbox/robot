@@ -1,0 +1,48 @@
+Included is the "RubyRobot" gem implementing the Netflix Studio Engineering 
+Take-home (backend) code exercise.
+
+This project uses the ruby bundler.  Navigate into 'ruby_robot' and run
+
+bundle install
+
+to install dependencies.
+
+The gem sources include a Rakefile.  The default rake task will run the 
+RSpec test suite (please note: I learned RSpec while implementing this
+code, so I'm sure my usage is far from idiomatic).
+
+In the 'ruby_robot', directory run
+
+rake -T
+
+to see a list of available tasks.
+
+Run 
+
+rake 
+
+to run the RSpec tests.
+
+Run 
+
+exe/ruby_robot
+
+to start the REPL shell.  Alternately, run "rake install:local" to build the 
+gem and install it locally.  If that is done 'ruby_robot' should be on the 
+path without providing the full path to it. 'ruby_robot' supports 'tab' 
+completion.  Whack tab a few times to see the supported commands (they are 
+lower-case rather than upper case).
+
+Also, be advised that the 3rd argument to the 'place' command must be either
+a quoted string, or a symbol as one of the following (case-insensitive) values:
+
+:north, :south, :east, :west
+
+An additional command is supported in the REPL, that being 'exit' to exit the 
+REPL.
+
+To interact with the classes, run 
+
+bin/console 
+
+to run IRB w/ the RubyRobot gem preloaded.
