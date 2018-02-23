@@ -30,19 +30,16 @@ exe/ruby_robot
 to start the REPL shell.  Alternately, run "rake install:local" to build the 
 gem and install it locally.  If that is done 'ruby_robot' should be on the 
 path without providing the full path to it. 'ruby_robot' supports 'tab' 
-completion.  Whack tab a few times to see the supported commands (they are 
-lower-case rather than upper case).
+completion.  Whack tab a few times to see the supported commands.
 
-Also, be advised that the 3rd argument to the 'place' command must be either
-a quoted string, or a symbol as one of the following (case-insensitive) values:
+Also, be advised that the 3rd argument to the 'place' command should be 
+uppercase NORTH, SOUTH, EAST, or WEST.
 
-:north, :south, :east, :west
-
-An additional command is supported in the REPL, that being 'exit' to exit the 
+An additional command is supported in the REPL, that being 'QUIT' to exit the 
 REPL.
 
 To interact with the classes, run 
 
 bin/console 
 
-to run IRB w/ the RubyRobot gem preloaded.
+from the 'ruby_robot' directory to run IRB w/ the RubyRobot gem preloaded.

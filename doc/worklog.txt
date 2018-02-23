@@ -26,3 +26,6 @@ Total minutes: 240 minutes (4 hours)
 Total minutes: 320 (5 hours)
 
 2005-2145 (Finally) got uppercase working in console
+2145-2215 Updated design doc
+
+Total minutes: (~7.25 hours)
