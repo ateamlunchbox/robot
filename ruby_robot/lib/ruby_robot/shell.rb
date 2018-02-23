@@ -54,13 +54,5 @@ class Shell < ::Bombshell::Environment
     STDOUT.puts @robot.report
   end
   # alias :REPORT :report
-
-  #
-  # Exit the REPL
-  #
-  def exit
-    quit
-  end
-  # alias :EXIT :exit
 end
 end

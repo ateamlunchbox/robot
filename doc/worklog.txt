@@ -10,8 +10,18 @@ Total minutes: 135 (2.25 hours)
 
 2040-2125 45 min I think the Robot/Tabletop are basically working
 
-Total minutes: 180 mintes (3 hours)
+Total minutes: 180 minutes (3 hours)
 
 2125-2205 40 min: got the shell working
 2205-2215 10 min: adding README
 2215-2225 10 min: found bug, added tests, fixed
+
+Total minutes: 240 minutes (4 hours)
+
+2018-02-22
+
+1500-1545 Work on design doc
+1545-1600 Tried to get upper-case commands working in ruby_robot
+
+Total minutes: 320 (5 hours)
+
