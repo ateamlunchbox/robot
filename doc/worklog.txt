@@ -29,3 +29,6 @@ Total minutes: 320 (5 hours)
 2145-2215 Updated design doc
 
 Total minutes: (~7.25 hours)
+
+2018-02-23
+0815-0840 Put a bow on things; add tests for the REPL
