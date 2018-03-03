@@ -4,4 +4,16 @@ require 'rspec/core/rake_task'
 
 RSpec::Core::RakeTask.new(:spec)
 
+RSpec::Core::RakeTask.new(:cmd_line_spec) { |t|
+  t.pattern = 'cmd_line_spec/**{,/*/**}/*_spec.rb'
+}
+
+task :cmd_line_spec => ['install:local']
+
+namespace :spec do
+  desc "Run rspec tests and command-line tests"
+  task :all => ['spec', 'cmd_line_spec']
+end
+
 task default: :spec
+

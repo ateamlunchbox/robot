@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+#
+# Run a sinatra web service that serves up a swagger.json file
+# with its API, and has a JSON-over-HTTP interface for working
+# with the RubyRobot classes.
+#
+
+require 'sinatra/base'
+require 'sinatra/swagger-exposer/swagger-exposer'
+require 'ruby_robot'
+require 'json'
+
+module RubyRobot
+  class Webapp2 < ::RubyRobot::Webapp
+    run!
+  end
+end

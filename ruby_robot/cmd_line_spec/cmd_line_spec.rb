@@ -60,7 +60,8 @@ REPORT
 QUIT
 EOI
       results = {x: 3, y: 3, direction: :north}
-      output = `echo "#{cmds}" 2>/dev/null | ruby_robot | grep '^{'`.strip
+      # Eat expected stderr output
+      output = `echo "#{cmds}" | ruby_robot 2>/dev/null | grep '^{'`.strip
       expect(eval output).to eql results
     end
   end

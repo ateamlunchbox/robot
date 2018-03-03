@@ -34,8 +34,13 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'bombshell'
   spec.add_runtime_dependency 'wirble'
+  spec.add_runtime_dependency 'sinatra', "<2"
+  spec.add_runtime_dependency 'sinatra-swagger-exposer'
+  spec.add_runtime_dependency 'json-schema'
 
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec"
+  spec.add_development_dependency "guard-rspec"
+  spec.add_development_dependency "rack-test"
 end

@@ -31,4 +31,7 @@ Total minutes: 320 (5 hours)
 Total minutes: (~7.25 hours)
 
 2018-02-23
-0815-0840 Put a bow on things; add tests for the REPL
+0815-0840 Add tests for the REPL
+0840-0855 Update Rakefile so 'spec:all' installs the gem and runs all tests
+
+Total minutes: (~8 hours)

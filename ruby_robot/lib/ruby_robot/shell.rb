@@ -3,12 +3,22 @@
 # is the _(wo?)man_
 #
 require 'bombshell'
+require 'logger'
 
 module RubyRobot
 class Shell < ::Bombshell::Environment
   include ::Bombshell::Shell
 
   prompt_with 'ILoveNetflixStudio'
+
+  attr_reader :logger
+
+  def initialize
+    @logger = Logger.new(STDOUT)
+    @logger.formatter = proc { |severity, datetime, progname, msg|
+      msg
+    }
+  end
 
   #
   # Place a robot
@@ -26,7 +36,7 @@ class Shell < ::Bombshell::Environment
     rescue
       @robot = orig_robot
       @tabletop = orig_tabletop
-      STDERR.puts $!
+      @logger.info $!
     end
   end
 
@@ -45,9 +55,10 @@ class Shell < ::Bombshell::Environment
     @robot.right
   end
 
-  def REPORT
-    return if @robot.nil?
-    STDOUT.puts @robot.report
+  def REPORT(to_stderr=true)
+    return nil if @robot.nil?
+    @logger.info(@robot.report) if to_stderr
+    @robot.report
   end
 
   # Exit Bombshell
