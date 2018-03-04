@@ -5,6 +5,8 @@
 # with the RubyRobot classes.
 #
 
+require 'rubygems'
+require 'bundler/setup'
 require 'sinatra/base'
 require 'sinatra/swagger-exposer/swagger-exposer'
 require 'ruby_robot'
