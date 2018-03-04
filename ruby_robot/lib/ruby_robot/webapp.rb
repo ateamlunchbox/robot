@@ -94,8 +94,23 @@ end # if USE_SWAGGER_EXPOSER
     [400, {code: 400, message: ERR_PLACEMENT_MSG}.to_json]
   end
 
-  def position_report 
-    [200, robot.REPORT(false).to_json]
+  def formatted_report
+    r = robot.REPORT(false)
+    if !r.nil?
+      r[:direction] = r[:direction].upcase unless r[:direction].nil?
+    end
+    r
+  end
+
+  def position_report
+    # Pass along the report, but the direction needs to be upcased to
+    # comply w/ the JSON schema for the web API 
+    [200, formatted_report.to_json]
+  end
+
+  def load_schema(name)
+    schema_path = File.join(File.dirname(__FILE__), '..', '..', 'doc', "#{name}.schema.json")
+    schema = JSON.load(File.new(schema_path))
   end
 
 if USE_SWAGGER_EXPOSER
@@ -112,20 +127,20 @@ end # if USE_SWAGGER_EXPOSER
     request_params = nil
     result = nil
     begin
+      # Parse JSON args
       request.body.rewind
       request_params = JSON.parse(request.body.read)
-      # try to place; if false, it wasn't (re)placed, but 
-      # it may still have a valid position.
-      status_code = robot.PLACE(request_params['x'], request_params['y'], (request_params['direction'] || "north")) ? 200 : 400
-      # If nil, then send an error
-      result = robot.REPORT
-      if result.nil? 
-        [400, {code: 400, message: 'Invalid coordinates'}.to_json] 
-      else
-        [status_code, result.to_json]
-      end
+      # Validate input against JSON schema
+      schema = load_schema('request.place')
+      json_schema_errors = JSON::Validator.fully_validate(schema, request_params)
+      return [400, {code: 400, message: "Bad request: #{json_schema_errors.join('; ')}" }.to_json] unless json_schema_errors.empty?
+      # Call robot#PLACE: inputs have already been validated by the JSON schema
+      robot.PLACE(request_params['x'], request_params['y'], (request_params['direction']))
+      [200, formatted_report.to_json]
     rescue
-     [400, {code: 400, message: 'Bad request'}.to_json]
+      # TODO: log failing request details to enterprise logging...
+      # STDERR.puts $!
+      [400, {code: 400, message: "Bad request (#{$!}): #{$!.backtrace.join("\n")}"}.to_json]
     end
   end
 

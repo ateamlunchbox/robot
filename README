@@ -43,3 +43,21 @@ To interact with the classes, run
 bin/console 
 
 from the 'ruby_robot' directory to run IRB w/ the RubyRobot gem preloaded.
+
+============================
+JSON-over-HTTP API interface
+
+This was a personal "stretch goal": implementing a HTTP interface to the Robot 
+API complete with Swagger.io-enabled API documentation.
+
+Run
+
+exe/ruby_robot_web 
+
+(or install the gem and run 'ruby_robot_web') and then browse to 
+http://localhost:4567 to view Swagger.io API documentation with GUIs for 
+exercising the Robot HTTP API.
+
+JSON schemas for the request/response message formats have also been 
+added under the 'doc' directory within the ruby_robot gem.  JSON schemas
+have been used with additional RSpec tests to validate inputs and outputs.

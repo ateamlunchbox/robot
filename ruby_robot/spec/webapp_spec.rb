@@ -1,11 +1,17 @@
 require 'ruby_robot'
 require 'rack/test'
+require 'json-schema'
 
 describe 'RubyRobot Sinatra App' do 
   include Rack::Test::Methods
 
   def app
     RubyRobot::Webapp.new
+  end
+
+  def load_schema(name)
+    schema_path = File.join(File.dirname(__FILE__), '..', 'doc', "#{name}.schema.json")
+    schema = JSON.load(File.new(schema_path))
   end
 
   context "When fetching the Swagger.io API description" do
@@ -47,7 +53,7 @@ describe 'RubyRobot Sinatra App' do
         direction: 'NORTH'
       }
       post '/place', data.to_json, 'Content-Type' => 'application/json'
-      expect(JSON.parse(last_response.body)['message']).to include('Invalid coordinates')
+      expect(JSON.parse(last_response.body)['message']).to include('request.place.schema.json')
       expect(last_response.status).to eql 400
     end
 
@@ -58,7 +64,7 @@ describe 'RubyRobot Sinatra App' do
         direction: 'NORTH'
       }
       post '/place', data.to_json, 'Content-Type' => 'application/json'
-      expect(JSON.parse(last_response.body)['message']).to include('Invalid coordinates')
+      expect(JSON.parse(last_response.body)['message']).to include('request.place.schema.json')
       expect(last_response.status).to eql 400
     end
 
@@ -66,6 +72,15 @@ describe 'RubyRobot Sinatra App' do
       expect  post '/place', "{", 'Content-Type' => 'application/json'
       expect(JSON.parse(last_response.body)['message']).to include('Bad request')
       expect(last_response.status).to eql 400
+    end
+
+    it "POSTing to /place w/ only a direction should fail" do
+      data = {
+        direction: 'SOUTH'
+      }
+      post '/place', data.to_json, 'Content-Type' => 'application/json'
+      expect(last_response.status).to eql 400
+      expect(JSON.parse(last_response.body)['message']).to include('request.place.schema.json')
     end
 
     it "POSTing to /place with valid args should respond with 200 and the 'report' output." do
@@ -78,7 +93,7 @@ describe 'RubyRobot Sinatra App' do
       expect(JSON.parse(last_response.body)).to eql({ 
         'x' => 3,
         'y' => 2,
-        'direction' => 'south'
+        'direction' => 'SOUTH'
         })
       expect(last_response.status).to eql 200
     end
@@ -97,12 +112,12 @@ describe 'RubyRobot Sinatra App' do
       expect(JSON.parse(last_response.body)).to eql({ 
         'x' => 1,
         'y' => 2,
-        'direction' => 'south'
+        'direction' => 'SOUTH'
         })
       expect(last_response.status).to eql 200
     end
 
-    it "should respond to POST /place w/ invalid updated position output with the previous position and HTTP 400" do
+    it "should respond to POST /place w/ invalid updated position output with HTTP 400 and an error" do
       data = {
         x: 3, 
         y: 2,
@@ -111,11 +126,7 @@ describe 'RubyRobot Sinatra App' do
       post '/place', data.to_json, 'Content-Type' => 'application/json'
       expect(last_response.status).to eql 200
       post '/place', data.merge(x:100).to_json, 'Content-Type' => 'application/json'
-      expect(JSON.parse(last_response.body)).to eql({ 
-        'x' => 3,
-        'y' => 2,
-        'direction' => 'south'
-        })
+      expect(JSON.parse(last_response.body)['message']).to include('request.place.schema.json')
       expect(last_response.status).to eql 400
     end
 
@@ -138,7 +149,7 @@ describe 'RubyRobot Sinatra App' do
       expect(last_response.status).to eql 200
       post '/left', '', 'Content-Type' => 'application/json'
       expect(JSON.parse(last_response.body)).to eql({
-        'x' => 3, 'y' => 2, 'direction' => 'east'
+        'x' => 3, 'y' => 2, 'direction' => 'EAST'
       })
       expect(last_response.status).to eql 200
     end
@@ -149,7 +160,7 @@ describe 'RubyRobot Sinatra App' do
       expect(last_response.status).to eql 200
       post '/right', '', 'Content-Type' => 'application/json'
       expect(JSON.parse(last_response.body)).to eql({
-        'x' => 3, 'y' => 2, 'direction' => 'west'
+        'x' => 3, 'y' => 2, 'direction' => 'WEST'
       })
       expect(last_response.status).to eql 200
     end
@@ -160,13 +171,13 @@ describe 'RubyRobot Sinatra App' do
       expect(last_response.status).to eql 200
       post '/move', '', 'Content-Type' => 'application/json'
       expect(JSON.parse(last_response.body)).to eql({
-        'x' => 3, 'y' => 0, 'direction' => 'south'
+        'x' => 3, 'y' => 0, 'direction' => 'SOUTH'
       })
       expect(last_response.status).to eql 200
       # Attempt to "move off the board" and confirm it doesn't actually do that
       post '/move', '', 'Content-Type' => 'application/json'
       expect(JSON.parse(last_response.body)).to eql({
-        'x' => 3, 'y' => 0, 'direction' => 'south'
+        'x' => 3, 'y' => 0, 'direction' => 'SOUTH'
       })
       expect(last_response.status).to eql 200
     end
@@ -177,9 +188,29 @@ describe 'RubyRobot Sinatra App' do
       expect(last_response.status).to eql 200
       get '/report', '', 'Content-Type' => 'application/json'
       expect(JSON.parse(last_response.body)).to eql({
-        'x' => 3, 'y' => 2, 'direction' => 'south'
+        'x' => 3, 'y' => 2, 'direction' => 'SOUTH'
       })
       expect(last_response.status).to eql 200
+    end
+
+    it "should respond to GET /report w/ JSON that validates against schema" do
+      # TODO: Put schema loading into a common place
+
+      data = { x: 3, y: 2, direction: 'SOUTH' }
+      # Validate request data...
+      schema = load_schema('request.place')
+      expect(JSON::Validator.validate(schema, JSON.parse(data.to_json))).to eql true
+      post '/place', data.to_json, 'Content-Type' => 'application/json'
+      expect(last_response.status).to eql 200
+      expect(JSON.parse(last_response.body)).to eql({
+        'x' => 3, 'y' => 2, 'direction' => 'SOUTH'
+      })
+      # Load response schema      
+      schema = load_schema('request.place')
+      b = JSON.parse(last_response.body)
+      errors = JSON::Validator.fully_validate(schema, b)
+      puts errors unless errors.empty?
+      expect(JSON::Validator.validate(schema, b)).to eql true
     end
   end
 end
