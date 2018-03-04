@@ -163,23 +163,6 @@
           }
         }
       }
-    },
-    "/swagger_doc.json": {
-      "get": {
-        "summary": "The swagger endpoint",
-        "tags": ["swagger"],
-        "responses": {
-          "200": {}
-        }
-      },
-      "options": {
-        "summary": "Option method for the swagger endpoint, useful for some CORS stuff",
-        "tags": ["swagger"],
-        "produces": ["text/plain;charset=utf-8"],
-        "responses": {
-          "200": {}
-        }
-      }
     }
   }
 }

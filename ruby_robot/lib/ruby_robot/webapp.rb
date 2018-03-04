@@ -191,5 +191,11 @@ end # if USE_SWAGGER_EXPOSER
       position_report
     end
   end
+
+if !USE_SWAGGER_EXPOSER
+  get '/' do
+    redirect '/index.html'
+  end
+end
 end
 end
