@@ -48,7 +48,8 @@ from the 'ruby_robot' directory to run IRB w/ the RubyRobot gem preloaded.
 JSON-over-HTTP API interface
 
 This was a personal "stretch goal": implementing a HTTP interface to the Robot 
-API complete with Swagger.io-enabled API documentation.
+API complete with Swagger.io-enabled API documentation.  The HTTP interface allows any web client to manipulate a singleton robot within the web server
+using the same interface as the interactive console.
 
 Run
 
@@ -61,3 +62,5 @@ exercising the Robot HTTP API.
 JSON schemas for the request/response message formats have also been 
 added under the 'doc' directory within the ruby_robot gem.  JSON schemas
 have been used with additional RSpec tests to validate inputs and outputs.
+
+HTTP POST /place input is also now validated against the relevant JSON schema.
