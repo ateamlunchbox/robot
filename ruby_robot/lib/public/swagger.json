@@ -1,0 +1,185 @@
+{
+  "swagger": "2.0",
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "info": {
+    "version": "0.1.0",
+    "title": "RubyRobot",
+    "description": "Web interface to RubyRobot API"
+  },
+  "definitions": {
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "example": 400,
+          "description": "The error code",
+          "type": "integer"
+        },
+        "message": {
+          "example": "Robot is not currently placed",
+          "description": "The error message",
+          "type": "string"
+        }
+      },
+      "required": ["code", "message"]
+    },
+    "Report": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "example": 0,
+          "type": "integer"
+        },
+        "y": {
+          "example": 0,
+          "type": "integer"
+        },
+        "direction": {
+          "example": "NORTH",
+          "type": "string",
+          "enum": [
+            "NORTH",
+            "SOUTH",
+            "EAST",
+            "WEST"
+          ]
+        }
+      },
+      "required": ["x", "y", "direction"]
+    }
+  },
+  "paths": {
+    "/left": {
+      "post": {
+        "description": "Turn the robot left",
+        "tags": ["Robot"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Report"
+            },
+            "description": "{\"x\":1,\"y\":1,\"direction\":\"NORTH\"}"
+          },
+          "400": {
+            "schema": {
+              "$ref": "#/definitions/Error"
+            },
+            "description": "Robot is not currently placed"
+          }
+        }
+      }
+    },
+    "/move": {
+      "post": {
+        "description": "Move the robot",
+        "tags": ["Robot"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Report"
+            },
+            "description": "{\"x\":1,\"y\":1,\"direction\":\"NORTH\"}"
+          },
+          "400": {
+            "schema": {
+              "$ref": "#/definitions/Error"
+            },
+            "description": "Robot is not currently placed"
+          }
+        }
+      }
+    },
+    "/place": {
+      "post": {
+        "description": "Place the robot",
+        "tags": ["Robot"],
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/Report"
+          },
+          "description": "Robot placement specification object",
+          "example": {
+            "x": 1,
+            "y": 1,
+            "direction": "NORTH"
+          }
+        }],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Report"
+            },
+            "description": "Successful placement"
+          },
+          "400": {
+            "schema": {
+              "$ref": "#/definitions/Error"
+            },
+            "description": "Robot is not currently placed"
+          }
+        }
+      }
+    },
+    "/report": {
+      "get": {
+        "description": "Report the robot's position and orientation",
+        "tags": ["Robot"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Report"
+            },
+            "description": "{\"x\":1,\"y\":1,\"direction\":\"NORTH\"}"
+          },
+          "400": {
+            "schema": {
+              "$ref": "#/definitions/Error"
+            },
+            "description": "Robot is not currently placed"
+          }
+        }
+      }
+    },
+    "/right": {
+      "post": {
+        "description": "Turn the robot right",
+        "tags": ["Robot"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Report"
+            },
+            "description": "{\"x\":1,\"y\":1,\"direction\":\"NORTH\"}"
+          },
+          "400": {
+            "schema": {
+              "$ref": "#/definitions/Error"
+            },
+            "description": "Robot is not currently placed"
+          }
+        }
+      }
+    },
+    "/swagger_doc.json": {
+      "get": {
+        "summary": "The swagger endpoint",
+        "tags": ["swagger"],
+        "responses": {
+          "200": {}
+        }
+      },
+      "options": {
+        "summary": "Option method for the swagger endpoint, useful for some CORS stuff",
+        "tags": ["swagger"],
+        "produces": ["text/plain;charset=utf-8"],
+        "responses": {
+          "200": {}
+        }
+      }
+    }
+  }
+}

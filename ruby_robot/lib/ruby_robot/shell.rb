@@ -33,10 +33,12 @@ class Shell < ::Bombshell::Environment
     @tabletop = NetflixTabletop.new
     begin
       @tabletop.place(@robot, x: x, y: y)
+      true
     rescue
       @robot = orig_robot
       @tabletop = orig_tabletop
       @logger.info $!
+      false
     end
   end
 

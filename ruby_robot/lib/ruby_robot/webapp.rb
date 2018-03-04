@@ -4,22 +4,31 @@ require 'ruby_robot'
 require 'json'
 
 module RubyRobot
+
+#
+# SwaggerExposer turns out to have a few drawbacks; it doesn't support
+# specifying enumerated string types.
+#
+USE_SWAGGER_EXPOSER=false
+
 #
 # Simple Sinatra webapp that supports:
 #
-# Run HTTP GET on /swagger_doc.json to fetch a JSON OpenAPI description 
+# Run HTTP GET on /swagger.json to fetch a static JSON OpenAPI description 
 # for this webapp (suitable for use with swagger.io's GUI).
 #
 class Webapp < Sinatra::Base
   set :public_folder, File.expand_path(File.join(File.dirname(__FILE__), '..', 'public'))
   enable :static
 
-  register Sinatra::SwaggerExposer
 
-  REPORT_EXAMPLE = {x:1,y:1,direction: :north}.to_json
+  REPORT_EXAMPLE_OBJ = {x:1,y:1,direction: :NORTH}
+  REPORT_EXAMPLE = REPORT_EXAMPLE_OBJ.to_json
 
   ERR_PLACEMENT_MSG = 'Robot is not currently placed'
 
+if USE_SWAGGER_EXPOSER
+  register Sinatra::SwaggerExposer 
   #
   # Swagger general info
   #
@@ -39,7 +48,7 @@ class Webapp < Sinatra::Base
     :properties => {
       :code => {
         :type => Integer,
-        :example => 404,
+        :example => 400,
         :description => 'The error code',
       },
       :message => {
@@ -51,6 +60,7 @@ class Webapp < Sinatra::Base
   }
 
   type 'Report', {
+    required: [:x, :y, :direction],
     properties: {
       x: {
         type: Integer,
@@ -66,6 +76,7 @@ class Webapp < Sinatra::Base
       }
     }
   }
+end # if USE_SWAGGER_EXPOSER
 
   #
   # "Normal" sinatra/ruby code.
@@ -87,24 +98,15 @@ class Webapp < Sinatra::Base
     [200, robot.REPORT(false).to_json]
   end
 
+if USE_SWAGGER_EXPOSER
   endpoint_description 'Place the robot'
-  endpoint_parameter :x, 'east/west location', :query, true, Integer, {
-    example: 0,
-    maximum: RubyRobot::NetflixTabletop.new.width - 1,
-    minimum: 0
+  endpoint_parameter :body, "Robot placement specification object", :body, true, 'Report', {
+    example: REPORT_EXAMPLE_OBJ
   } 
-  endpoint_parameter :y, 'north/south location', :query, true, Integer, {
-    example: 0,
-    maximum: RubyRobot::NetflixTabletop.new.height - 1,
-    minimum: 0
-  }
-  endpoint_parameter :direction, 'initial direction', :query, true, String, {
-    example: 'NORTH',
-    default: 'NORTH'
-  }  
   endpoint_response 200, 'Report', 'Successful placement'
   endpoint_response 400, 'Error', ERR_PLACEMENT_MSG
   endpoint_tags 'Robot'
+end # if USE_SWAGGER_EXPOSER
   post '/place' do 
     content_type :json
     request_params = nil
@@ -112,24 +114,27 @@ class Webapp < Sinatra::Base
     begin
       request.body.rewind
       request_params = JSON.parse(request.body.read)
-      # try to place
-      robot.PLACE(request_params['x'], request_params['y'], (request_params['direction'] || "north"))
+      # try to place; if false, it wasn't (re)placed, but 
+      # it may still have a valid position.
+      status_code = robot.PLACE(request_params['x'], request_params['y'], (request_params['direction'] || "north")) ? 200 : 400
       # If nil, then send an error
       result = robot.REPORT
       if result.nil? 
         [400, {code: 400, message: 'Invalid coordinates'}.to_json] 
       else
-        [200, result.to_json]
+        [status_code, result.to_json]
       end
     rescue
      [400, {code: 400, message: 'Bad request'}.to_json]
     end
   end
 
+if USE_SWAGGER_EXPOSER
   endpoint_description 'Move the robot'
   endpoint_response 200, 'Report', REPORT_EXAMPLE
   endpoint_response 400, 'Error', ERR_PLACEMENT_MSG
   endpoint_tags 'Robot'
+end # if USE_SWAGGER_EXPOSER
   post '/move' do 
     content_type :json
     if robot.REPORT.nil?
@@ -140,10 +145,12 @@ class Webapp < Sinatra::Base
     end
   end
 
+if USE_SWAGGER_EXPOSER
   endpoint_description 'Turn the robot left'
   endpoint_response 200, 'Report', REPORT_EXAMPLE
   endpoint_response 400, 'Error', ERR_PLACEMENT_MSG
   endpoint_tags 'Robot'
+end # if USE_SWAGGER_EXPOSER
   post '/left' do
     content_type :json
     if robot.REPORT.nil?
@@ -154,10 +161,12 @@ class Webapp < Sinatra::Base
     end
   end
 
+if USE_SWAGGER_EXPOSER
   endpoint_description 'Turn the robot right'
   endpoint_response 200, 'Report', REPORT_EXAMPLE
   endpoint_response 400, 'Error', ERR_PLACEMENT_MSG
   endpoint_tags 'Robot'
+end # if USE_SWAGGER_EXPOSER
   post '/right' do
     content_type :json
     if robot.REPORT.nil?
@@ -168,10 +177,12 @@ class Webapp < Sinatra::Base
     end
   end
 
+if USE_SWAGGER_EXPOSER
   endpoint_description "Report the robot's position and orientation"
   endpoint_response 200, 'Report', REPORT_EXAMPLE
   endpoint_response 400, 'Error', ERR_PLACEMENT_MSG
   endpoint_tags 'Robot'
+end # if USE_SWAGGER_EXPOSER
   get '/report' do
     content_type :json
     if robot.REPORT.nil?
