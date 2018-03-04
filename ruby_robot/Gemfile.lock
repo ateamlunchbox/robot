@@ -1,8 +1,9 @@
 PATH
   remote: .
   specs:
-    ruby_robot (0.1.0)
+    ruby_robot (0.1.1)
       bombshell
+      bundler (~> 1.16)
       json-schema
       sinatra (< 2)
       sinatra-swagger-exposer
@@ -88,7 +89,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 1.16)
   guard-rspec
   rack-test
   rake (~> 10.0)
