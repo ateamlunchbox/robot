@@ -3,6 +3,7 @@ $:.unshift(File.dirname(__FILE__) + '/../spec') unless $:.include?(File.dirname(
 require 'spec_helper'
 require 'ruby_robot'
 
+EXE_PATH=File.join(File.dirname(__FILE__), '..', 'exe', 'ruby_robot')
 #
 # NOTE: The ruby_robot gem must be installed locally to
 # provide access to the 'ruby_robot' executable; this spec
@@ -18,7 +19,7 @@ REPORT
 QUIT
 EOI
       results = {x: 0, y: 1, direction: :north}
-      output = `echo "#{cmds}" 2>/dev/null | ruby_robot | grep '^{'`.strip
+      output = `echo "#{cmds}" 2>/dev/null | #{EXE_PATH} | grep '^{'`.strip
       expect(eval output).to eql results
     end
     it "should support the second scenario" do
@@ -29,7 +30,7 @@ REPORT
 QUIT
 EOI
       results = {x: 0, y: 0, direction: :west}
-      output = `echo "#{cmds}" 2>/dev/null | ruby_robot | grep '^{'`.strip
+      output = `echo "#{cmds}" 2>/dev/null | #{EXE_PATH} | grep '^{'`.strip
       expect(eval output).to eql results
     end
     it "should support the third scenario" do
@@ -43,7 +44,7 @@ REPORT
 QUIT
 EOI
       results = {x: 3, y: 3, direction: :north}
-      output = `echo "#{cmds}" | ruby_robot | grep '^{'`.strip
+      output = `echo "#{cmds}" 2>/dev/null | #{EXE_PATH} | grep '^{'`.strip
       expect(eval output).to eql results
     end
     it "should support a modified third scenario" do
@@ -61,7 +62,7 @@ QUIT
 EOI
       results = {x: 3, y: 3, direction: :north}
       # Eat expected stderr output
-      output = `echo "#{cmds}" | ruby_robot 2>/dev/null | grep '^{'`.strip
+      output = `echo "#{cmds}" 2>/dev/null | #{EXE_PATH} | grep '^{'`.strip
       expect(eval output).to eql results
     end
   end

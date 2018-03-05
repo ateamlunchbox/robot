@@ -97,9 +97,25 @@ describe 'RubyRobot Sinatra App' do
         })
       expect(last_response.status).to eql 200
     end
+
+    it "POSTing to /remove should return 200, and then /right should 400 w/ not currently placed" do
+      post '/remove'
+      expect(last_response.status).to eql 200
+      post '/right'
+      expect(JSON.parse(last_response.body)['message']).to include('not currently placed')
+      expect(last_response.status).to eql 400
+    end
   end
 
   context "When talking to the webapp after robot placement" do
+    it "should respond to POST /remove w/ 200, and then /right should be 400 'not currently placed'" do
+      post '/remove'
+      expect(last_response.status).to eql 200
+      post '/right'
+      expect(JSON.parse(last_response.body)['message']).to include('not currently placed')
+      expect(last_response.status).to eql 400
+    end
+
     it "should respond to POST /place w/ updated position output and HTTP 200" do
       data = {
         x: 3, 

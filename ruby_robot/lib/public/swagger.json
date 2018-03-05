@@ -124,6 +124,17 @@
         }
       }
     },
+    "/remove": {
+      "post": {
+        "description": "Remove the robot from the tabletop",
+        "tags": ["Robot"],
+        "responses": {
+          "200": {
+            "description": "Successfully removed the robot"
+          }
+        }
+      }
+    },
     "/report": {
       "get": {
         "description": "Report the robot's position and orientation",

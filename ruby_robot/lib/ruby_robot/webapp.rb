@@ -218,5 +218,10 @@ if !USE_SWAGGER_EXPOSER
     redirect '/index.html'
   end
 end
+
+  post '/remove' do
+    @@robot = nil
+    [200]
+  end
 end
 end

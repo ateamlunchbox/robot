@@ -31,6 +31,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Versions
 
+0.1.5 - Add /remove call to remove the singleton robot from the tabletop in the HTTP API
 0.1.4 - Fix dependency issue
 0.1.3 - Fix bundler setup for ruby_robot; move json schemas from 'doc' to 'json_schema'
 0.1.2 - Add checks so web app will bind to all interfaces when run under Docker
