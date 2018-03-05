@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://github.com/ateamlunchbox/robot/ruby_robot/doc/request.place.schema.json",
+  "definitions": {
+    "Report": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "example": 0,
+          "type": "integer",
+          "exclusiveMaximum": true,
+          "minimum": 0,
+          "maximum": 5
+        },
+        "y": {
+          "example": 0,
+          "type": "integer",
+          "exclusiveMaximum": true,
+          "minimum": 0,
+          "maximum": 5
+        },
+        "direction": {
+          "example": "NORTH",
+          "type": "string",
+          "enum": [
+            "NORTH",
+            "SOUTH",
+            "EAST",
+            "WEST"
+          ]
+        }
+      },
+      "required": ["x", "y", "direction"]
+    }
+  },
+  "$ref": "#/definitions/Report"
+}
