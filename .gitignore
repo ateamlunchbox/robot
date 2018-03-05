@@ -1,0 +1,9 @@
+.DS_Store
+/ruby_robot/.bundle/
+/ruby_robot/.yardoc
+/ruby_robot/_yardoc/
+/ruby_robot/coverage/
+/ruby_robot/doc/
+/ruby_robot/pkg/
+/ruby_robot/spec/reports/
+/ruby_robot/tmp/
