@@ -21,6 +21,11 @@ class Webapp < Sinatra::Base
   set :public_folder, File.expand_path(File.join(File.dirname(__FILE__), '..', 'public'))
   enable :static
 
+  # Tell sinatra to listen on all interfaces if it detects 
+  # it is running on a docker container...otherwise it
+  # will just bind to the loopback interface which can't be
+  # exposed from the container.
+  set :bind, '0.0.0.0' if File.exist?('/.dockerenv')
 
   REPORT_EXAMPLE_OBJ = {x:1,y:1,direction: :NORTH}
   REPORT_EXAMPLE = REPORT_EXAMPLE_OBJ.to_json
