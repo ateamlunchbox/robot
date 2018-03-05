@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby_robot (0.1.4)
+    ruby_robot (0.1.5)
       bombshell
       bundler (~> 1.16)
       json-schema
