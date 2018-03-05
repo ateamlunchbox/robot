@@ -16,7 +16,7 @@ class Shell < ::Bombshell::Environment
   def initialize
     @logger = Logger.new(STDOUT)
     @logger.formatter = proc { |severity, datetime, progname, msg|
-      msg
+      "#{msg}\n"
     }
   end
 
