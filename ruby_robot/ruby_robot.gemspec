@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = ">= 2.0.0"
 
-  spec.summary       = %q{RubyGem implementing a Robot for Neflix Studio coding exercise.}
+  spec.summary       = %q{RubyGem implementing a Robot for Netflix Studio coding exercise.}
   spec.description   = spec.summary
   spec.homepage      = "https://github.com/ateamlunchbox"
   spec.license       = "MIT"
