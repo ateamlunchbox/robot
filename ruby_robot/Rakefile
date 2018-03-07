@@ -10,6 +10,11 @@ RSpec::Core::RakeTask.new(:cmd_line_spec) { |t|
 
 task :cmd_line_spec => ['install:local']
 
+# For right now, run this from lib/ruby_robot to build the protobuf stubs:
+#
+# protoc -I protos --ruby_out=lib --grpc_out=lib --plugin=protoc-gen-grpc=`which grpc_ruby_plugin` robot.proto
+#
+
 namespace :spec do
   desc "Run rspec tests and command-line tests"
   task :all => ['spec', 'cmd_line_spec']

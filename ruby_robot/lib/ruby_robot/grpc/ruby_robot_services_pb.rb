@@ -24,7 +24,7 @@ module RubyRobot
       rpc :Left, Google::Protobuf::Empty, RubyRobotResponse
       rpc :Move, Google::Protobuf::Empty, RubyRobotResponse
       rpc :Place, RubyRobotRequest, RubyRobotResponse
-      rpc :Remove, Google::Protobuf::Empty, RubyRobotResponse
+      rpc :Remove, Google::Protobuf::Empty, Google::Protobuf::Empty
       rpc :Report, Google::Protobuf::Empty, RubyRobotResponse
       rpc :Right, Google::Protobuf::Empty, RubyRobotResponse
     end

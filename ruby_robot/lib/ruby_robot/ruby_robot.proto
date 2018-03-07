@@ -16,12 +16,12 @@ package RubyRobot;
 // Service definitions
 //
 service RubyRobot {
-  rpc Left(google.protobuf.Empty)   returns (RubyRobotResponse) {}
-  rpc Move(google.protobuf.Empty)   returns (RubyRobotResponse) {}
-  rpc Place(RubyRobotRequest)       returns (RubyRobotResponse) {}
-  rpc Remove(google.protobuf.Empty) returns (RubyRobotResponse) {}
-  rpc Report(google.protobuf.Empty) returns (RubyRobotResponse) {}
-  rpc Right(google.protobuf.Empty)  returns (RubyRobotResponse) {}
+  rpc Left(google.protobuf.Empty)   returns (RubyRobotResponse)     {}
+  rpc Move(google.protobuf.Empty)   returns (RubyRobotResponse)     {}
+  rpc Place(RubyRobotRequest)       returns (RubyRobotResponse)     {}
+  rpc Remove(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+  rpc Report(google.protobuf.Empty) returns (RubyRobotResponse)     {}
+  rpc Right(google.protobuf.Empty)  returns (RubyRobotResponse)     {}
 }
 
 //
