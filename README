@@ -64,3 +64,9 @@ added under the 'doc' directory within the ruby_robot gem.  JSON schemas
 have been used with additional RSpec tests to validate inputs and outputs.
 
 HTTP POST /place input is also now validated against the relevant JSON schema.
+
+============================
+gRPC API interface
+
+This was a second "stretch goal": exe/ruby_robot_grpc_server in one terminal, then run exe/ruby_robot_grpc_client in another to see the Robot API exercised using a gRPC-based
+client/server.
