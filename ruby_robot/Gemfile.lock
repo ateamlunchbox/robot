@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby_robot (0.1.6)
+    ruby_robot (0.1.7)
       bombshell
       bundler (~> 1.16)
       grpc
