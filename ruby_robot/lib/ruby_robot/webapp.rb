@@ -19,6 +19,8 @@ USE_SWAGGER_EXPOSER=false
 # for this webapp (suitable for use with swagger.io's GUI).
 #
 class Webapp < Sinatra::Base
+  include ::RubyRobot::SchemaLoader
+
   set :public_folder, File.expand_path(File.join(File.dirname(__FILE__), '..', 'public'))
   enable :static
 
@@ -32,6 +34,14 @@ class Webapp < Sinatra::Base
   REPORT_EXAMPLE = REPORT_EXAMPLE_OBJ.to_json
 
   ERR_PLACEMENT_MSG = 'Robot is not currently placed'
+
+  def request_schema
+    @@request_schema ||= schema = load_schema('request')
+  end
+
+  def response_schema
+    @@request_schema ||= schema = load_schema('response')
+  end
 
 if USE_SWAGGER_EXPOSER
   register Sinatra::SwaggerExposer 
@@ -114,11 +124,6 @@ end # if USE_SWAGGER_EXPOSER
     [200, formatted_report.to_json]
   end
 
-  def load_schema(name)
-    schema_path = File.join(File.dirname(__FILE__), '..', '..', 'json_schema', "#{name}.schema.json")
-    schema = JSON.load(File.new(schema_path))
-  end
-
 if USE_SWAGGER_EXPOSER
   endpoint_description 'Place the robot'
   endpoint_parameter :body, "Robot placement specification object", :body, true, 'Report', {
@@ -137,16 +142,21 @@ end # if USE_SWAGGER_EXPOSER
       request.body.rewind
       request_params = JSON.parse(request.body.read)
       # Validate input against JSON schema
-      schema = load_schema('request.place')
-      json_schema_errors = JSON::Validator.fully_validate(schema, request_params)
-      return [400, {code: 400, message: "Bad request: #{json_schema_errors.join('; ')}" }.to_json] unless json_schema_errors.empty?
+      json_schema_errors = JSON::Validator.fully_validate(request_schema, request_params)
+      body_json = {code: 400, message: "Bad request: #{json_schema_errors.join('; ')}"[0...255] }.to_json
+      body body_json
+      return [400, body_json] unless json_schema_errors.empty?
       # Call robot#PLACE: inputs have already been validated by the JSON schema
       robot.PLACE(request_params['x'], request_params['y'], (request_params['direction']))
-      [200, formatted_report.to_json]
+      body_json = formatted_report.to_json
+      body body_json
+      [200, body_json]
     rescue
       # TODO: log failing request details to enterprise logging...
       # STDERR.puts $!
-      [400, {code: 400, message: "Bad request (#{$!}): #{$!.backtrace.join("\n")}"}.to_json]
+      body_json = {code: 400, message: "Bad request (#{$!})"[0...255]}.to_json
+      body body_json
+      [400, body_json]
     end
   end
 
@@ -222,6 +232,31 @@ end
   post '/remove' do
     @@robot = nil
     [200]
+  end
+
+  #
+  # For now, just validate the response for POST /place to show 
+  # responses can be validated within a Sinatra URL handler.
+  #
+  after '/place' do
+    # Validate response
+    begin
+      obj = JSON.parse(body.first)
+      obj['message']="hello world"
+      # Load the schema each time: otherwise it won't validate correctly
+      # during tests for some unknown reason.
+      s = load_schema('response')
+      unless JSON::Validator.validate(s, obj)
+        # TODO: Enteprise logging
+        # Print out the failing constraints
+        STDERR.puts JSON::Validator.fully_validate(s, obj)
+        STDERR.puts "Return value doesn't match response.schema.json: #{body.first}"
+      end
+    rescue
+      # TODO: Enterprise logging here...
+      STDERR.puts "Error (#{$!}) parsing JSON: '#{body}'"
+    end
+    # STDERR.puts "Failed validation" if JSON::Validator.validate(@response_schema, obj)
   end
 end
 end

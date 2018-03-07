@@ -47,6 +47,12 @@
         }
       },
       "required": ["x", "y", "direction"]
+    },
+    "ReportOrError": {
+      "oneOf": [
+        { "$ref": "#/definitions/Error" },
+        { "$ref": "#/definitions/Report" },
+      ]
     }
   },
   "paths": {
@@ -63,7 +69,7 @@
           },
           "400": {
             "schema": {
-              "$ref": "#/definitions/Error"
+              "$ref": "#/definitions/ReportOrError"
             },
             "description": "Robot is not currently placed"
           }
@@ -83,7 +89,7 @@
           },
           "400": {
             "schema": {
-              "$ref": "#/definitions/Error"
+              "$ref": "#/definitions/ReportOrError"
             },
             "description": "Robot is not currently placed"
           }
@@ -145,12 +151,6 @@
               "$ref": "#/definitions/Report"
             },
             "description": "{\"x\":1,\"y\":1,\"direction\":\"NORTH\"}"
-          },
-          "400": {
-            "schema": {
-              "$ref": "#/definitions/Error"
-            },
-            "description": "Robot is not currently placed"
           }
         }
       }

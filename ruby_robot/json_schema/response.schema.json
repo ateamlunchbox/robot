@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://github.com/ateamlunchbox/robot/ruby_robot/doc/response.schema.json",
+  "definitions": {
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 1024
+        }
+      },
+      "required": [ "code", "message" ]
+    }
+  },
+  "description": "A response can either be an Error or a Report.",
+  "oneOf": [
+    { "$ref": "#/definitions/Error" },
+    { "$ref": "request.schema.json#/definitions/Report" }
+  ]
+}

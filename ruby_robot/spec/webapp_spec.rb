@@ -4,14 +4,15 @@ require 'json-schema'
 
 describe 'RubyRobot Sinatra App' do 
   include Rack::Test::Methods
+  include ::RubyRobot::SchemaLoader
+
+  before :all do
+    @request_place_schema = load_schema('request')
+    @response_schema = load_schema('response')
+  end
 
   def app
     RubyRobot::Webapp.new
-  end
-
-  def load_schema(name)
-    schema_path = File.join(File.dirname(__FILE__), '..', 'json_schema', "#{name}.schema.json")
-    schema = JSON.load(File.new(schema_path))
   end
 
   context "When fetching the Swagger.io API description" do
@@ -53,7 +54,7 @@ describe 'RubyRobot Sinatra App' do
         direction: 'NORTH'
       }
       post '/place', data.to_json, 'Content-Type' => 'application/json'
-      expect(JSON.parse(last_response.body)['message']).to include('request.place.schema.json')
+      expect(JSON.parse(last_response.body)['message']).to include('request.schema.json')
       expect(last_response.status).to eql 400
     end
 
@@ -64,7 +65,7 @@ describe 'RubyRobot Sinatra App' do
         direction: 'NORTH'
       }
       post '/place', data.to_json, 'Content-Type' => 'application/json'
-      expect(JSON.parse(last_response.body)['message']).to include('request.place.schema.json')
+      expect(JSON.parse(last_response.body)['message']).to include('request.schema.json')
       expect(last_response.status).to eql 400
     end
 
@@ -80,7 +81,7 @@ describe 'RubyRobot Sinatra App' do
       }
       post '/place', data.to_json, 'Content-Type' => 'application/json'
       expect(last_response.status).to eql 400
-      expect(JSON.parse(last_response.body)['message']).to include('request.place.schema.json')
+      expect(JSON.parse(last_response.body)['message']).to include('request.schema.json')
     end
 
     it "POSTing to /place with valid args should respond with 200 and the 'report' output." do
@@ -112,7 +113,8 @@ describe 'RubyRobot Sinatra App' do
       post '/remove'
       expect(last_response.status).to eql 200
       post '/right'
-      expect(JSON.parse(last_response.body)['message']).to include('not currently placed')
+      body_obj = JSON.parse(last_response.body)
+      expect(body_obj['message']).to include('not currently placed')
       expect(last_response.status).to eql 400
     end
 
@@ -133,7 +135,7 @@ describe 'RubyRobot Sinatra App' do
       expect(last_response.status).to eql 200
     end
 
-    it "should respond to POST /place w/ invalid updated position output with HTTP 400 and an error" do
+    it "should respond to POST /place w/ invalid updated position output with HTTP 400 and an error and responses should validate" do
       data = {
         x: 3, 
         y: 2,
@@ -141,9 +143,13 @@ describe 'RubyRobot Sinatra App' do
       }
       post '/place', data.to_json, 'Content-Type' => 'application/json'
       expect(last_response.status).to eql 200
+      body_obj = JSON.parse(last_response.body)
+      expect(JSON::Validator.validate(@response_schema, body_obj)).to eql true
       post '/place', data.merge(x:100).to_json, 'Content-Type' => 'application/json'
-      expect(JSON.parse(last_response.body)['message']).to include('request.place.schema.json')
+      expect(JSON.parse(last_response.body)['message']).to include('request.schema.json')
       expect(last_response.status).to eql 400
+      body_obj = JSON.parse(last_response.body)
+      expect(JSON::Validator.validate(@response_schema, body_obj)).to eql true
     end
 
     it "should respond to POST /place w/ invalid JSON data with 'Bad request' message and HTTP 400" do
@@ -214,19 +220,17 @@ describe 'RubyRobot Sinatra App' do
 
       data = { x: 3, y: 2, direction: 'SOUTH' }
       # Validate request data...
-      schema = load_schema('request.place')
-      expect(JSON::Validator.validate(schema, JSON.parse(data.to_json))).to eql true
+      expect(JSON::Validator.validate(@request_place_schema, JSON.parse(data.to_json))).to eql true
       post '/place', data.to_json, 'Content-Type' => 'application/json'
       expect(last_response.status).to eql 200
       expect(JSON.parse(last_response.body)).to eql({
         'x' => 3, 'y' => 2, 'direction' => 'SOUTH'
       })
       # Load response schema      
-      schema = load_schema('request.place')
       b = JSON.parse(last_response.body)
-      errors = JSON::Validator.fully_validate(schema, b)
+      errors = JSON::Validator.fully_validate(@request_place_schema, b)
       puts errors unless errors.empty?
-      expect(JSON::Validator.validate(schema, b)).to eql true
+      expect(JSON::Validator.validate(@request_place_schema, b)).to eql true
     end
   end
 end

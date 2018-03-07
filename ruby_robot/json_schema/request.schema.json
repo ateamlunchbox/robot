@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://github.com/ateamlunchbox/robot/ruby_robot/doc/request.place.schema.json",
+  "id": "http://github.com/ateamlunchbox/robot/ruby_robot/doc/request.schema.json",
   "definitions": {
     "Report": {
       "type": "object",
