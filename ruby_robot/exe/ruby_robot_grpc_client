@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+$:.unshift(File.dirname(__FILE__) + '/../lib') unless $:.include?(File.dirname(__FILE__) + '/../lib')
+
+require 'rubygems'
+require 'bundler/setup'
+$: << File.dirname(__FILE__) + '/../lib/ruby_robot/grpc_ruby'
+require 'ruby_robot/grpc/ruby_robot_services_pb'
+require 'json'
+
+def main
+  stub = ::RubyRobot::RubyRobot::Stub.new('localhost:31310', :this_channel_is_insecure)
+  puts stub.left(  Google::Protobuf::Empty.new).error.message
+  puts stub.move(  Google::Protobuf::Empty.new).error.message
+  puts stub.remove(Google::Protobuf::Empty.new).error.message
+  puts stub.report(Google::Protobuf::Empty.new).error.message
+  puts stub.right( Google::Protobuf::Empty.new).error.message
+
+  cs = stub.place(::RubyRobot::RubyRobotRequest.new(x: 2, y: 3, direction: :EAST)).current_state
+  puts ({ x: cs.x, y: cs.y, direction: cs.direction.downcase}.to_json)
+end
+
+main

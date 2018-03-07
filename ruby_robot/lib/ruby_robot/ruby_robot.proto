@@ -1,0 +1,53 @@
+//
+// gRPC service definition for the RubyRobot.
+//
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "net.avilla.netflix.studio.robot";
+option java_outer_classname = "RobotProto";
+option objc_class_prefix = "RBT";
+
+package RubyRobot;
+
+//
+// Service definitions
+//
+service RubyRobot {
+  rpc Left(google.protobuf.Empty)   returns (RubyRobotResponse) {}
+  rpc Move(google.protobuf.Empty)   returns (RubyRobotResponse) {}
+  rpc Place(RubyRobotRequest)       returns (RubyRobotResponse) {}
+  rpc Remove(google.protobuf.Empty) returns (RubyRobotResponse) {}
+  rpc Report(google.protobuf.Empty) returns (RubyRobotResponse) {}
+  rpc Right(google.protobuf.Empty)  returns (RubyRobotResponse) {}
+}
+
+//
+// Message type definitions
+//
+message RubyRobotRequest {
+  int32 x = 1;
+  int32 y = 2;
+  enum Direction {
+    // Clockwise from NORTH
+    NORTH=0;
+    EAST =1;
+    SOUTH=2;
+    WEST =3;
+  } 
+  Direction direction = 3;
+}
+
+message RubyRobotError {
+  int32 error    = 1;
+  string message = 2;
+}
+
+message RubyRobotResponse {
+  oneof response {
+    RubyRobotRequest current_state = 1;
+    RubyRobotError   error   = 2;
+  }
+}

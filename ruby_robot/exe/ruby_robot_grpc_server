@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+$:.unshift(File.dirname(__FILE__) + '/../lib') unless $:.include?(File.dirname(__FILE__) + '/../lib')
+
+require 'rubygems'
+require 'bundler/setup'
+require 'ruby_robot/grpc/robot_service'
+
+def main
+  s = GRPC::RpcServer.new
+  s.add_http2_port('0.0.0.0:31310', :this_port_is_insecure)
+  s.handle(::RubyRobot::Grpc::RobotService)
+  puts "RobotService: running"
+  s.run_till_terminated
+end
+
+main
