@@ -40,7 +40,12 @@ class Webapp < Sinatra::Base
   end
 
   def response_schema
-    @@request_schema ||= schema = load_schema('response')
+    @@response_schema ||= schema = load_schema('response')
+  end
+
+  def max_error_message_length
+    # Grab from the schema
+    (response_schema['definitions']['Error']['properties']['message']['maxLength'] || 1024)
   end
 
 if USE_SWAGGER_EXPOSER
@@ -143,7 +148,7 @@ end # if USE_SWAGGER_EXPOSER
       request_params = JSON.parse(request.body.read)
       # Validate input against JSON schema
       json_schema_errors = JSON::Validator.fully_validate(request_schema, request_params)
-      body_json = {code: 400, message: "Bad request: #{json_schema_errors.join('; ')}"[0...255] }.to_json
+      body_json = {code: 400, message: "Bad request: #{json_schema_errors.join('; ')}"[0...max_error_message_length] }.to_json
       body body_json
       return [400, body_json] unless json_schema_errors.empty?
       # Call robot#PLACE: inputs have already been validated by the JSON schema
@@ -154,7 +159,7 @@ end # if USE_SWAGGER_EXPOSER
     rescue
       # TODO: log failing request details to enterprise logging...
       # STDERR.puts $!
-      body_json = {code: 400, message: "Bad request (#{$!})"[0...255]}.to_json
+      body_json = {code: 400, message: "Bad request (#{$!})"[0...max_error_message_length]}.to_json
       body body_json
       [400, body_json]
     end
@@ -242,14 +247,10 @@ end
     # Validate response
     begin
       obj = JSON.parse(body.first)
-      obj['message']="hello world"
-      # Load the schema each time: otherwise it won't validate correctly
-      # during tests for some unknown reason.
-      s = load_schema('response')
-      unless JSON::Validator.validate(s, obj)
+      unless JSON::Validator.validate(response_schema, obj)
         # TODO: Enteprise logging
         # Print out the failing constraints
-        STDERR.puts JSON::Validator.fully_validate(s, obj)
+        STDERR.puts JSON::Validator.fully_validate(response_schema, obj)
         STDERR.puts "Return value doesn't match response.schema.json: #{body.first}"
       end
     rescue
