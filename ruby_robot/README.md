@@ -30,7 +30,7 @@ After checking out the repo, run `bin/setup` to install dependencies. You can al
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Versions
-
+0.1.6 - Add JSON schema validation of the responses returned to clients from POST /place; simplify schemas
 0.1.5 - Add /remove call to remove the singleton robot from the tabletop in the HTTP API
 0.1.4 - Fix dependency issue
 0.1.3 - Fix bundler setup for ruby_robot; move json schemas from 'doc' to 'json_schema'
