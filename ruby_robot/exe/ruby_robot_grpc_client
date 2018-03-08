@@ -6,22 +6,8 @@ require 'rubygems'
 require 'bundler/setup'
 $: << File.dirname(__FILE__) + '/../lib/ruby_robot/grpc_ruby'
 require 'ruby_robot/grpc/ruby_robot_services_pb'
+require 'ruby_robot'
 require 'json'
-
-#
-# Define #to_json on ::RubyRobot::RubyRobotRequest for prettier printing.
-#
-module RubyRobot
-class RubyRobotRequest
-  def to_json
-    {
-      x: self.x,
-      y: self.y,
-      direction: self.direction.to_s
-    }.to_json
-  end
-end
-end
 
 def main
   stub = ::RubyRobot::RubyRobot::Stub.new('localhost:31310', :this_channel_is_insecure)

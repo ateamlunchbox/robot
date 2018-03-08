@@ -55,7 +55,7 @@ if USE_SWAGGER_EXPOSER
   #
   general_info(
     {
-      version: RubyRobot::VERSION,
+      version: ::RubyRobot::VERSION,
       title: 'RubyRobot',
       description: 'Web interface to RubyRobot API',
     }
@@ -104,7 +104,7 @@ end # if USE_SWAGGER_EXPOSER
   #
   def robot
     @@robot ||= proc { 
-      rr = RubyRobot::Shell.new
+      rr = ::RubyRobot::Shell.new
       # In the webapp, don't log the REPORT messages to stdout
       rr.logger.formatter = proc { |severity, datetime, progname, msg| "" }
       rr

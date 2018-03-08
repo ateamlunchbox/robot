@@ -109,7 +109,7 @@ class Irb
             # Begin monkeypatch: turn uppercase constants into
             # method calls
             #
-            if [:MOVE,:LEFT,:RIGHT,:REPORT,:QUIT].include?(l.strip.to_sym)
+            if [:MOVE,:LEFT,:RIGHT,:REPORT,:REMOVE,:QUIT].include?(l.strip.to_sym)
               l = "#{l.strip}()\n"
             end
             #

@@ -70,3 +70,13 @@ gRPC API interface
 
 This was a second "stretch goal": exe/ruby_robot_grpc_server in one terminal, then run exe/ruby_robot_grpc_client in another to see the Robot API exercised using a gRPC-based
 client/server.
+
+Or run 
+
+exe/ruby_robot_grpc_server 
+
+in one terminal, and 
+
+exe/ruby_robot grpc://localhost:31310
+
+in a second one.  This will launch 'ruby_robot' connected over gRPC to the remote Robot server.

@@ -30,6 +30,7 @@ After checking out the repo, run `bin/setup` to install dependencies. You can al
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Versions
+0.1.8 - Add gRPC support to the 'ruby_robot' REPL
 0.1.7 - Add gRPC client/server
 0.1.6 - Add JSON schema validation of the responses returned to clients from POST /place; simplify schemas
 0.1.5 - Add /remove call to remove the singleton robot from the tabletop in the HTTP API

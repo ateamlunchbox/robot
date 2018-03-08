@@ -5,7 +5,22 @@ $:.unshift(File.dirname(__FILE__) + '/../lib') unless $:.include?(File.dirname(_
 require 'rubygems'
 require 'bundler/setup'
 require 'ruby_robot'
+require 'uri'
 
 STDOUT.puts "Welcome to the shell; press 'tab' to see available commands"
 STDOUT.puts "(tab-complete is also enabled)"
-::Bombshell.launch(::RubyRobot::Shell)
+
+#
+# TODO: use getoptlong to parse args, including better --help output, etc.
+#
+if ARGV.size == 0
+  ::Bombshell.launch(::RubyRobot::Shell)
+elsif ARGV.size == 1
+  ::RubyRobot::GrpcShell.remote_url = URI.parse(ARGV.first)
+  ::Bombshell.launch(::RubyRobot::GrpcShell)
+else
+  STDERR.puts "        Usage: #{$0} [gRPC_Remote_URL]"
+  STDERR.puts "Local Example: #{$0} grpc://netflix.avilla.net:31310"
+  STDERR.puts " gRPC Example: #{$0} "
+  exit 1
+end
