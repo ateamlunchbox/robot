@@ -29,13 +29,21 @@ class GrpcShell < ::Bombshell::Environment
     # TODO: Enable SSL/TLS
     # Totally cheating here: if URI is grpc://netflix.avilla.net, 
     # then load up the cert (stored in the gem).
-    channel_creds = :this_channel_is_insecure
-    if @@remote_url.to_s.start_with?("gprcs://netflix.avilla.net")
-      channel_creds = GRPC::Core::ChannelCredentials.new(
-        File.read(File.join(File.dirname(__FILE__), "netflix.avilla.net.crt"))
+    if @@remote_url.to_s.start_with?("grpcs://netflix.avilla.net")
+      ca_path = File.join(File.dirname(__FILE__), "cacerts.crt")
+      channel_creds = GRPC::Core::ChannelCredentials.new(File.read(ca_path))
+      stub_opts = {
+        :creds => channel_creds, 
+        GRPC::Core::Channel::SSL_TARGET => @@remote_url.host
+      }
+      @stub = ::RubyRobot::RubyRobot::Stub.new(
+        "#{@@remote_url.host}:#{@@remote_url.port}", channel_creds
       )
+    else
+      @stub = ::RubyRobot::RubyRobot::Stub.new("#{@@remote_url.host}:#{@@remote_url.port}", :this_channel_is_insecure)
     end
-    @stub = ::RubyRobot::RubyRobot::Stub.new("#{@@remote_url.host}:#{@@remote_url.port}", channel_creds)
+    puts "Checking state of Robot at #{@@remote_url}"
+    self.REPORT()
   end
 
   def PLACE(x, y, direction)

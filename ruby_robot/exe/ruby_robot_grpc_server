@@ -7,8 +7,37 @@ require 'bundler/setup'
 require 'ruby_robot/grpc/robot_service'
 
 def main
+  #
+  # TODO: This needs to be way smarter and read public/private keys
+  # from the environment somehow (/etc/sysconfig/<service_name> on
+  # RedHat/CentOS/Fedora), vs. just looking for hardcoded values
+  # locally.
+  # 
+  # TODO: Needs error handling and enterprise logging.
+  #
   s = GRPC::RpcServer.new
-  s.add_http2_port('0.0.0.0:31310', :this_port_is_insecure)
+
+  channel_creds = :this_port_is_insecure
+
+  # TODO: Time is short; hardcode paths to keys for the lone supported TLS server
+  ca  = '/etc/pki/tls/certs/ca-bundle.crt'
+  key = '/etc/pki/tls/private/netflix.avilla.net.key'
+  crt = '/etc/pki/tls/certs/netflix.avilla.net.crt'
+
+  if File.exist?(ca) && File.exist?(key) && File.exist?(crt)
+    force_client_auth = false
+    channel_creds = GRPC::Core::ServerCredentials.new(
+      File.read(ca), 
+      [{
+        private_key: File.read(key),
+        cert_chain: File.read(crt)
+      }], 
+      force_client_auth
+    )
+    puts "Found TLS files: using GRPC::Core::ServerCredentials"
+  end
+
+  s.add_http2_port('0.0.0.0:31310', channel_creds)
   s.handle(::RubyRobot::Grpc::RobotService)
   puts "RobotService: running"
   s.run_till_terminated
