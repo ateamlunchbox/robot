@@ -27,7 +27,15 @@ class GrpcShell < ::Bombshell::Environment
   end
   def initialize
     # TODO: Enable SSL/TLS
-    @stub = ::RubyRobot::RubyRobot::Stub.new("#{@@remote_url.host}:#{@@remote_url.port}", :this_channel_is_insecure)
+    # Totally cheating here: if URI is grpc://netflix.avilla.net, 
+    # then load up the cert (stored in the gem).
+    channel_creds = :this_channel_is_insecure
+    if @@remote_url.to_s.start_with?("gprcs://netflix.avilla.net")
+      channel_creds = GRPC::Core::ChannelCredentials.new(
+        File.read(File.join(File.dirname(__FILE__), "netflix.avilla.net.crt"))
+      )
+    end
+    @stub = ::RubyRobot::RubyRobot::Stub.new("#{@@remote_url.host}:#{@@remote_url.port}", channel_creds)
   end
 
   def PLACE(x, y, direction)
@@ -56,9 +64,10 @@ class GrpcShell < ::Bombshell::Environment
   end
 
   def REMOVE
-    puts "Called #REMOVE"
     @stub.remove(Google::Protobuf::Empty.new)
   end
+
+  alias :QUIT :quit
 end
 end
 module Bombshell

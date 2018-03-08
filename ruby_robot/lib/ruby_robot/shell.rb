@@ -201,3 +201,4 @@ end
 # Tell shell not to show lower-case 'quit' method; it is aliased
 # to #QUIT along w/ all the other upper-case methods.
 ::Bombshell::Shell::Commands::HIDE << :quit
+::Bombshell::Shell::Commands::HIDE << :logger

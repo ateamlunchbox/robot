@@ -7,20 +7,25 @@ require 'bundler/setup'
 require 'ruby_robot'
 require 'uri'
 
-STDOUT.puts "Welcome to the shell; press 'tab' to see available commands"
-STDOUT.puts "(tab-complete is also enabled)"
-
 #
 # TODO: use getoptlong to parse args, including better --help output, etc.
 #
-if ARGV.size == 0
-  ::Bombshell.launch(::RubyRobot::Shell)
-elsif ARGV.size == 1
-  ::RubyRobot::GrpcShell.remote_url = URI.parse(ARGV.first)
-  ::Bombshell.launch(::RubyRobot::GrpcShell)
+if ARGV.size == 1
+  uri, *rest = ARGV
+  
+  STDOUT.puts "Welcome to the shell; press 'tab' to see available commands"
+  STDOUT.puts "(tab-complete is also enabled)"
+
+  if uri.strip.downcase == 'standalone'
+    ::Bombshell.launch(::RubyRobot::Shell)
+  else
+    ::RubyRobot::GrpcShell.remote_url = URI.parse(ARGV.first)
+    ::Bombshell.launch(::RubyRobot::GrpcShell)
+  end
 else
-  STDERR.puts "        Usage: #{$0} [gRPC_Remote_URL]"
-  STDERR.puts "Local Example: #{$0} grpc://netflix.avilla.net:31310"
-  STDERR.puts " gRPC Example: #{$0} "
+  STDERR.puts "                  Usage: #{$0} [gRPC_Remote_URL|standalone]"
+  STDERR.puts "     Standalone Example: #{$0} standalone"
+  STDERR.puts " gRPC Localhost Example: #{$0} grpc://127.0.0.1:31310"
+  STDERR.puts "gRPC Remote TLS Example: #{$0} grpcs://netflix.avilla.net:31310"
   exit 1
 end
