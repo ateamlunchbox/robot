@@ -6,13 +6,14 @@ require 'rubygems'
 require 'bundler/setup'
 require 'ruby_robot'
 require 'uri'
+require 'optparse'
 
 #
-# TODO: use getoptlong to parse args, including better --help output, etc.
+# TODO: use getoptlong (or optparse) to parse args, including support for --help.
 #
 if ARGV.size == 1
   uri, *rest = ARGV
-  
+
   STDOUT.puts "Welcome to the shell; press 'tab' to see available commands"
   STDOUT.puts "(tab-complete is also enabled)"
 
@@ -22,6 +23,8 @@ if ARGV.size == 1
     ::RubyRobot::GrpcShell.remote_url = URI.parse(ARGV.first)
     ::Bombshell.launch(::RubyRobot::GrpcShell)
   end
+elsif ARGV.empty?
+  ::Bombshell.launch(::RubyRobot::Shell)
 else
   STDERR.puts "                  Usage: #{$0} [gRPC_Remote_URL|standalone]"
   STDERR.puts "     Standalone Example: #{$0} standalone"

@@ -68,8 +68,7 @@ HTTP POST /place input is also now validated against the relevant JSON schema.
 ============================
 gRPC API interface
 
-This was a second "stretch goal": exe/ruby_robot_grpc_server in one terminal, then run exe/ruby_robot_grpc_client in another to see the Robot API exercised using a gRPC-based
-client/server.
+This was a second "stretch goal": exe/ruby_robot_grpc_server in one terminal, then run exe/ruby_robot_grpc_client in another to see the Robot API exercised using a gRPC-based client/server.
 
 Or run 
 
@@ -79,4 +78,10 @@ in one terminal, and
 
 exe/ruby_robot grpc://localhost:31310
 
-in a second one.  This will launch 'ruby_robot' connected over gRPC to the remote Robot server.
+in a second one.  This will launch 'ruby_robot' connected over gRPC to the local Robot server running on port 31310.
+
+To make things easier, a gRPC server (with TLS) is up and running at grpcs://netflix.avilla.net:31310.  Run the 'ruby_robot' as a client:
+
+exe/ruby_robot grpcs://netflix.avilla.net:31310
+
+to interact with the Robot running on netflix.avilla.net.
