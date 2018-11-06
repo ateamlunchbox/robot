@@ -1,5 +1,4 @@
 require 'sinatra/base'
-require 'sinatra/swagger-exposer/swagger-exposer'
 require 'ruby_robot'
 require 'json-schema'
 require 'json'
